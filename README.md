@@ -1,7 +1,8 @@
 <h1 align="center"><b>Loan Default Prediction</b></h1>
+
 ---
 
-### 💻 Contributers
+### 💻 Contributors
 
 | Name            | GitHub Profile                                                   |
 |-----------------|------------------------------------------------------------------|
@@ -10,7 +11,6 @@
 | Tasneem Hussein | [Tasneem Hussein](https://github.com/tasneemhussein12)           |
 | Mohamed Sheta   | [Mohamed Sheta](https://github.com/Mohamed-Sheta)                |
 | Ossama Ayman    | [Ossama Ayman](https://github.com/OssamaAyman)                   |
-
 
 ---
 
