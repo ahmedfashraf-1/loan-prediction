@@ -1,4 +1,4 @@
-<h1 align="center"><b>📊 Loan Default Prediction</b></h1>
+<h1 align="center"><b>📊 Loan Defaulter Prediction</b></h1>
 
 ### 1. 📖 Introduction  
 This project describes the dataset used for the *Loan Default Prediction* task, explains where the data comes from, lists the project contributors, and provides a complete explanation of each file in the dataset.  
@@ -14,7 +14,7 @@ The workflow involves combining these files, performing preprocessing, feature e
 
 ---
 
-### 💻 Contributors
+### 💻 Contributers
 
 | Name            | GitHub Profile                                                   |
 |-----------------|------------------------------------------------------------------|
