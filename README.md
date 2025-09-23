@@ -1,19 +1,5 @@
 <h1 align="center"><b>📊 Loan Default Prediction</b></h1>
 
----
-
-### 💻 Contributors
-
-| Name            | GitHub Profile                                                   |
-|-----------------|------------------------------------------------------------------|
-| Ahmed Ashraf    | [Ahmed Ashraf](https://github.com/ahmedfashraf-1)                |
-| Malak Ahmed     | [Malak Ahmed](https://github.com/Malak-A7med)                    |
-| Tasneem Hussein | [Tasneem Hussein](https://github.com/tasneemhussein12)           |
-| Mohamed Sheta   | [Mohamed Sheta](https://github.com/Mohamed-Sheta)                |
-| Ossama Ayman    | [Ossama Ayman](https://github.com/OssamaAyman)                   |
-
----
-
 ### 1. 📖 Introduction  
 This project describes the dataset used for the *Loan Default Prediction* task, explains where the data comes from, lists the project contributors, and provides a complete explanation of each file in the dataset.  
 
@@ -25,6 +11,18 @@ The dataset contains three files:
 3. *columns_description.csv*  
 
 The workflow involves combining these files, performing preprocessing, feature engineering, and exploratory data analysis to create robust predictive models.  
+
+---
+
+### 💻 Contributors
+
+| Name            | GitHub Profile                                                   |
+|-----------------|------------------------------------------------------------------|
+| Ahmed Ashraf    | [Ahmed Ashraf](https://github.com/ahmedfashraf-1)                |
+| Malak Ahmed     | [Malak Ahmed](https://github.com/Malak-A7med)                    |
+| Tasneem Hussein | [Tasneem Hussein](https://github.com/tasneemhussein12)           |
+| Mohamed Sheta   | [Mohamed Sheta](https://github.com/Mohamed-Sheta)                |
+| Ossama Ayman    | [Ossama Ayman](https://github.com/OssamaAyman)                   |
 
 ---
 
