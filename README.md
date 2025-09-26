@@ -14,7 +14,7 @@ The workflow involves combining these files, performing preprocessing, feature e
 
 ---
 
-### 💻 Contributers
+### 2. 💻 Contributers
 
 | Name            | GitHub Profile                                                   |
 |-----------------|------------------------------------------------------------------|
@@ -26,15 +26,13 @@ The workflow involves combining these files, performing preprocessing, feature e
 
 ---
 
-### 2. 🎯 Objective
+### 3. 🎯 Project Objective
 
-The objective of this case study is to apply Exploratory Data Analysis (EDA) techniques in a real-world business scenario within the banking and financial services domain.  
-The focus is to develop a basic understanding of risk analytics by analyzing customer data and their previous loan applications.  
-By combining demographic, financial, and historical loan information, the study aims to identify key factors that influence the risk of default. This will help in minimizing financial losses for the bank by improving lending decisions and building a stronger risk assessment framework.
+The objective of this project is to use Machine Learning techniques on real-world banking and financial data to predict the likelihood of loan default. By analyzing demographic, financial, and historical loan information, the study aims to identify key factors influencing risk, enabling the bank to make informed lending decisions, minimize financial losses, and build a robust risk assessment framework. The insights from this analysis will also support the development of more accurate predictive models and enhance overall risk analytics
 
 ---
 
-### 3. 📂 Dataset Overview
+### 4. 📂 Dataset Overview
 
 The dataset comprises information about loan applicants and their credit histories. Use the files together to perform thorough EDA (exploratory data analysis), create aggregated historical features, and build robust predictive models.
 
