@@ -63,3 +63,5 @@ By performing thorough *EDA, feature engineering, and predictive modeling, we ca
 >📂**Data Source:** [Kaggle — Loan Defaulter dataset](https://www.kaggle.com/datasets/gauravduttakiit/loan-defaulter)  
 
 >📦**Repository Link:** [ahmedfashraf-1/loan-prediction](https://github.com/ahmedfashraf-1/loan-prediction)
+
+>📑**Google Colab Notebook:** [Loan Defaulter Prediction Notebook](https://colab.research.google.com/drive/16tdhFYxIqNBiy_HznSF4_-874vzx9R-E?usp=drive_link#scrollTo=PdX_qoeKZi4h)
