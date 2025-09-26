@@ -22,7 +22,7 @@ The workflow involves combining these files, performing preprocessing, feature e
 | Malak Ahmed     | [Malak Ahmed](https://github.com/Malak-A7med)                    |
 | Tasneem Hussein | [Tasneem Hussein](https://github.com/tasneemhussein12)           |
 | Mohamed Sheta   | [Mohamed Sheta](https://github.com/Mohamed-Sheta)                |
-| Ossama Ayman    | [Ossama Ayman](https://github.com/OssamaAyman)                   |
+| Ossama Ayman    | [Ossama Ayman](https://github.com/Ossama-Ayman)                  |
 
 ---
 
@@ -38,8 +38,10 @@ By combining demographic, financial, and historical loan information, the study 
 
 The dataset comprises information about loan applicants and their credit histories. Use the files together to perform thorough EDA (exploratory data analysis), create aggregated historical features, and build robust predictive models.
 
-**Here is The Columns Description:**  
-[columns_description.csv (Google Drive Link)](https://drive.google.com/file/d/14OPssUiciOdcfhzXwMsviVBg1058gIbw/view?usp=sharing)
+<div style="border: 2px solid #fff; padding: 16px; border-radius: 8px; background: #222; color: #fff; margin-bottom: 1.5em;">
+<b>Here is The Columns Description:</b><br>
+<a href="https://drive.google.com/file/d/14OPssUiciOdcfhzXwMsviVBg1058gIbw/view?usp=sharing" style="color:#fff; text-decoration:underline;">columns_description.csv (Google Drive Link)</a>
+</div>
 
 #### Primary responsibilities for each file
 
