@@ -67,6 +67,6 @@ By performing thorough *EDA, feature engineering, and predictive modeling, we ca
 >📑**Google Colab Notebook:** [Loan Defaulter Prediction Notebook](https://colab.research.google.com/drive/1J3TWn40xFEsxQjK0TKC7GnlnBjf_-Q7b)
 
 Additional project resources:
-- [StakeHolders](https://drive.google.com/file/d/1mKLo3_hhdgKwfJlFxeOfs9J7cFbrNFaK/view?usp=sharing)
-- [DB Design](https://drive.google.com/file/d/1pzbFMJE-I6akEtJhfQ0BonX-JBt41HpV/view?usp=sharing)
+- [Project Stakeholders](https://drive.google.com/file/d/1mKLo3_hhdgKwfJlFxeOfs9J7cFbrNFaK/view?usp=sharing)
+- [Database Design](https://drive.google.com/file/d/1pzbFMJE-I6akEtJhfQ0BonX-JBt41HpV/view?usp=sharing)
 - [UI/UX Design](https://shaper-dark-muse.lovable.app/)
