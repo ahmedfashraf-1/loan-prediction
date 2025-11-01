@@ -1,9 +1,9 @@
-<h1 align="center"><b>📊 Loan Defaulter Prediction</b></h1>
+# 📊 Loan Defaulter Prediction
 
 ### 1. 📖 Introduction  
 This project describes the dataset used for the *Loan Default Prediction* task, explains where the data comes from, lists the project contributors, and provides a complete explanation of each file in the dataset.  
 
-The main goal of the project is to build predictive models that estimate the probability of a client defaulting on a loan (*binary target*).  
+The main goal of this project is to build predictive models that estimate the probability of a client defaulting on a loan (*binary target*).  
 
 The dataset contains three files:  
 1. *application_data.csv*  
@@ -65,3 +65,8 @@ By performing thorough *EDA, feature engineering, and predictive modeling, we ca
 >📦**Repository Link:** [ahmedfashraf-1/loan-prediction](https://github.com/ahmedfashraf-1/loan-prediction)
 
 >📑**Google Colab Notebook:** [Loan Defaulter Prediction Notebook](https://colab.research.google.com/drive/1J3TWn40xFEsxQjK0TKC7GnlnBjf_-Q7b)
+
+Additional project resources:
+- [StakeHolders](https://drive.google.com/file/d/1mKLo3_hhdgKwfJlFxeOfs9J7cFbrNFaK/view?usp=sharing)
+- [DB Design](https://drive.google.com/file/d/1pzbFMJE-I6akEtJhfQ0BonX-JBt41HpV/view?usp=sharing)
+- [UI/UX Design](https://shaper-dark-muse.lovable.app/)
