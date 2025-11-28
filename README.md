@@ -1,72 +1,153 @@
 # 📊 Loan Defaulter Prediction
 
-### 1. 📖 Introduction  
-This project describes the dataset used for the *Loan Default Prediction* task, explains where the data comes from, lists the project contributors, and provides a complete explanation of each file in the dataset.  
+## 1. 📖 Introduction
 
-The main goal of this project is to build predictive models that estimate the probability of a client defaulting on a loan (*binary target*).  
+This repository contains a complete end-to-end project for predicting loan default risk using machine learning. The dataset includes both current application data and historical application records which are used for feature engineering, exploratory data analysis, model training, and inference.
 
-The dataset contains three files:  
-1. *application_data.csv*  
-2. *previous_application.csv*  
-3. *columns_description.csv*  
+**Files included in the dataset:**
 
-The workflow involves combining these files, performing preprocessing, feature engineering, and exploratory data analysis to create robust predictive models.  
+* `application_data.csv` — current client-level features and the `TARGET` label (0 = repaid, 1 = default).
+* `previous_application.csv` — historical loan applications for the same clients (use to create aggregated features per `SK_ID_CURR`).
+* `columns_description.csv` — a dictionary describing column meanings and units.
 
 ---
 
-### 2. 💻 Contributers
+## 2. 💻 Contributors
 
-| Name            | GitHub Profile                                                   |
-|-----------------|------------------------------------------------------------------|
-| Ahmed Ashraf    | [Ahmed Ashraf](https://github.com/ahmedfashraf-1)                |
-| Malak Ahmed     | [Malak Ahmed](https://github.com/Malak-A7med)                    |
-| Tasneem Hussein | [Tasneem Hussein](https://github.com/tasneemhussein12)           |
-| Mohamed Sheta   | [Mohamed Sheta](https://github.com/Mohamed-Sheta)                |
-| Ossama Ayman    | [Ossama Ayman](https://github.com/Ossama-Ayman)                  |
-
----
-
-### 3. 🎯 Project Objective
-
-The objective of this project is to use Machine Learning techniques on real-world banking and financial data to predict the likelihood of loan default. By analyzing demographic, financial, and historical loan information, the study aims to identify key factors influencing risk, enabling the bank to make informed lending decisions, minimize financial losses, and build a robust risk assessment framework. The insights from this analysis will also support the development of more accurate predictive models and enhance overall risk analytics
+| Name            | GitHub                                                                     |
+| --------------- | -------------------------------------------------------------------------- |
+| Ahmed Ashraf    | [https://github.com/ahmedfashraf-1](https://github.com/ahmedfashraf-1)     |
+| Malak Ahmed     | [https://github.com/Malak-A7med](https://github.com/Malak-A7med)           |
+| Tasneem Hussein | [https://github.com/tasneemhussein12](https://github.com/tasneemhussein12) |
+| Mohamed Sheta   | [https://github.com/Mohamed-Sheta](https://github.com/Mohamed-Sheta)       |
+| Ossama Ayman    | [https://github.com/Ossama-Ayman](https://github.com/Ossama-Ayman)         |
 
 ---
 
-### 4. 📂 Dataset Overview
+## 3. 🎯 Project Objective
 
-The dataset comprises information about loan applicants and their credit histories. Use the files together to perform thorough EDA (exploratory data analysis), create aggregated historical features, and build robust predictive models.
-
-<div style="border: 2px solid #fff; padding: 16px; border-radius: 8px; background: #222; color: #fff; margin-bottom: 1.5em;">
-<b>Here is The Columns Description:</b><br>
-<a href="https://drive.google.com/file/d/14OPssUiciOdcfhzXwMsviVBg1058gIbw/view?usp=sharing" style="color:#fff; text-decoration:underline;">columns_description.csv (Google Drive Link)</a>
-</div>
-
-#### Primary responsibilities for each file
-
-- **application_data.csv** — main data: client-level features and the TARGET label (0 = non-default, 1 = default). This is the file you will use for preprocessing, training, and evaluating models.
-- **previous_application.csv** — historical loan applications from the same clients. Use it to create additional features (counts, averages, ratios) summarizing past behaviour for each SK_ID_CURR.
-- **columns_description.csv** — column dictionary: definitions and explanations of columns across the dataset. Use this as a reference throughout analysis.
-
-#### ⚡ Main workflow
-
-1. Start with `application_data.csv` for cleaning, encoding, and baseline modeling.
-2. Aggregate `previous_application.csv` by SK_ID_CURR to create historical features, then merge them into the main table for improved predictions.
-3. Use `columns_description.csv` as the authoritative reference for column meanings and units.
+To build robust ML models that estimate the probability of loan default by combining current application features with aggregated historical behaviour from previous applications. The resulting models and UI are intended to help data scientists and risk analysts inspect predictions and understand the most important risk drivers.
 
 ---
 
-### 5. ✅ Conclusion  
-This dataset provides a comprehensive view of both *current* and *historical loan applications*.  
-By performing thorough *EDA, feature engineering, and predictive modeling, we can identify the **key drivers of default risk*, thereby supporting smarter and safer lending decisions for financial institutions.
+## 4. 📂 Dataset Overview
+
+Use the three CSVs together during EDA and feature engineering. The `columns_description.csv` file is the authority for field meanings.
+
+> Column description (stored in repo): `data/columns_description.csv`
 
 ---
->📂**Data Source:** [Kaggle — Loan Defaulter dataset](https://www.kaggle.com/datasets/gauravduttakiit/loan-defaulter)  
 
->📦**Repository Link:** [ahmedfashraf-1/loan-prediction](https://github.com/ahmedfashraf-1/loan-prediction)
+## 5. 🏗️ Project Structure
 
->📑**Google Colab Notebook:** [Loan Defaulter Prediction Notebook](https://colab.research.google.com/drive/1J3TWn40xFEsxQjK0TKC7GnlnBjf_-Q7b)
+```
+Loan-Defaulter-Prediction/
+│
+├── data/
+│   ├── application_data.csv
+│   ├── previous_application.csv
+│   └── columns_description.csv
+│
+├── notebooks/
+│   └── eda_and_modeling.ipynb
+│
+├── models/
+│   └── final_model.pkl
+│
+├── fast_api_app/
+│   └── main.py
+│
+├── streamlit/
+│   ├── app.py
+│   └── assets/
+│
+├── requirements.txt
+└── README.md
+```
 
-Additional project resources:
-- [Project Stakeholders](https://drive.google.com/file/d/1mKLo3_hhdgKwfJlFxeOfs9J7cFbrNFaK/view?usp=sharing)
-- [Database Design](https://drive.google.com/file/d/1pzbFMJE-I6akEtJhfQ0BonX-JBt41HpV/view?usp=sharing)
-- [UI/UX Design](https://shaper-dark-muse.lovable.app/)
+**What each folder contains:**
+
+* `data/` — raw CSVs (do **not** push sensitive data to public repos).
+* `notebooks/` — notebooks for EDA, preprocessing, feature engineering and training experiments.
+* `models/` — serialized model(s) and preprocessor objects used by the API/UI.
+* `fast_api_app/` — FastAPI backend exposing prediction endpoints.
+* `streamlit/` — Streamlit frontend for interactive model exploration.
+* `requirements.txt` — pinned Python dependencies.
+
+---
+
+## 6. ⚙️ Installation
+
+Recommended: create and activate a virtual environment first.
+
+```bash
+# create & activate venv (example for Windows PowerShell)
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+
+# or on macOS / Linux
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+Install the project requirements:
+
+```bash
+pip install -r requirements.txt
+```
+
+> Tip: `requirements.txt` should contain packages such as `pandas`, `numpy`, `scikit-learn`, `joblib`/`pickle` (for model I/O), `fastapi`, `uvicorn`, and `streamlit`. Adjust pins to match your environment.
+
+---
+
+## 7. 🚀 Running the Applications
+
+You can run the backend API and the Streamlit frontend locally. They should be launched in separate terminals (or as background processes).
+
+### A) Run the Streamlit App
+
+```bash
+cd streamlit
+streamlit run app.py
+```
+
+Streamlit will automatically open a browser window (or show a local URL like `http://localhost:8501`).
+
+If the Streamlit UI expects the locally-running FastAPI backend, make sure the API is running before interacting with the UI.
+
+### B) Run the FastAPI Backend
+
+```bash
+cd fast_api_app
+uvicorn fast_api_app.main:app --reload
+```
+
+This binds by default to `127.0.0.1:8000`. Open the interactive API docs at `http://127.0.0.1:8000/docs`.
+
+**Notes:**
+
+* `--reload` enables auto-reload for development. Remove it in production.
+* If your `main.py` exposes the app with a different variable name or module path, replace `fast_api_app.main:app` accordingly.
+
+### C) Running both in parallel
+
+Open two terminals/tabs and run the Streamlit command in one and the Uvicorn command in the other. Alternatively use a process manager (tmux, GNU screen) or Docker (see optional section below).
+
+---
+
+## 8. 🧭 Usage & Workflow
+
+1. Put the CSVs in the `data/` folder.
+2. Open `notebooks/eda_and_modeling.ipynb` and run the cells to reproduce preprocessing, feature engineering, and model training steps.
+3. After training, save the model and any preprocessing pipeline into `models/` (e.g., `final_model.pkl`).
+4. Update `fast_api_app/main.py` to load the model from `models/` and expose an inference endpoint (e.g., `/predict`).
+5. Start the FastAPI server and the Streamlit app to serve predictions.
+
+---
+
+## 9. 📚 References & Resources
+
+* **Data Source:** Kaggle — Loan Defaulter Dataset
+* **UI/UX Design:** [https://shaper-dark-muse.lovable.app/](https://shaper-dark-muse.lovable.app/)
+
+---
