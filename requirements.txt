@@ -1,3 +1,4 @@
+--use-deprecated=legacy-resolver
 fastapi
 uvicorn
 jinja2
