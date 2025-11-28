@@ -1,11 +1,3 @@
-# =============================
-# FILE: app.py
-# =============================
-# Streamlit app — Black & Gold Professional UI (Top-17 features only)
-# Layout: left menu (Predict / About). In Predict: Tabs (Inputs A / Inputs B / Upload CSV).
-# Gamma fixed = 2.0. Threshold fixed = 0.4571. Prediction button styled red. Number_input spinners fixed via format.
-# Sample CSV uploaded by user (local path): /mnt/data/sample_applicants.csv
-
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -13,19 +5,15 @@ import pickle
 import os
 from pathlib import Path
 import time
+import requests
+import io
 
-# -----------------------------
-# Page config
-# -----------------------------
 st.set_page_config(
     page_title="Credit Risk — Black & Gold",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# -----------------------------
-# Exact features used by the model (order matters)
-# -----------------------------
 TOP_17 = [
     "EXT_SOURCE_2",
     "EXT_SOURCE_3",
@@ -46,9 +34,6 @@ TOP_17 = [
     "CREDIT_3M_TO_LAST_RATIO_MEAN",
 ]
 
-# -----------------------------
-# Model related (example training params for About page)
-# -----------------------------
 MODEL_INFO = {
     'framework': 'LightGBM',
     'objective': 'binary',
@@ -65,9 +50,6 @@ MODEL_INFO = {
     'n_estimators': 3000,
 }
 
-# -----------------------------
-# Focal transform (gamma fixed to 2.0)
-# -----------------------------
 @st.cache_data
 def focal_sigmoid(p: np.ndarray, gamma: float = 2.0) -> np.ndarray:
     return np.power(p, gamma)
@@ -75,41 +57,34 @@ def focal_sigmoid(p: np.ndarray, gamma: float = 2.0) -> np.ndarray:
 GAMMA = 2.0  # fixed per request
 THRESHOLD = 0.4571  # fixed threshold per request
 
-# -----------------------------
-# Load model
-# -----------------------------
+API_BASE = "http://127.0.0.1:8000"
+PREDICT_ENDPOINT = f"{API_BASE}/predict"
+PREDICT_CSV_ENDPOINT = f"{API_BASE}/predict_csv"
+
+# optional sample paths (from this session)
+SAMPLE_PATH_10 = "/mnt/data/sample_10_random.csv"
+SAMPLE_PATH_5 = "/mnt/data/sample_features_only.csv"
+
 @st.cache_resource
-def load_model(path: str = "../models/credit_model.pkl"):
+def load_model(path: str = "models/credit_model.pkl"):
     if not os.path.exists(path):
         return None
     with open(path, "rb") as f:
         m = pickle.load(f)
     return m
 
+
 model = load_model()
 
-# -----------------------------
-# Ensure session state keys exist
-# -----------------------------
 if 'show_single' not in st.session_state:
     st.session_state['show_single'] = False
 if 'uploaded_df' not in st.session_state:
     st.session_state['uploaded_df'] = None
-# لكل تاب flag لوحده
 if 'show_single_A' not in st.session_state:
     st.session_state['show_single_A'] = False
 if 'show_single_B' not in st.session_state:
     st.session_state['show_single_B'] = False
 
-# -----------------------------
-# Try to load style.css (optional)
-# -----------------------------
-css_path = Path("style.css")
-if css_path.exists():
-    with open(css_path, "r", encoding="utf-8") as f:
-        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-
-# Inline overrides (target prediction/export/run-batch button colors to red-ish)
 st.markdown(
     """
     <style>
@@ -143,15 +118,9 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# -----------------------------
-# Left menu (only Predict + About)
-# -----------------------------
 st.sidebar.title("Navigation")
 menu = st.sidebar.radio("", ["Predict", "About"], index=0)
 
-# -----------------------------
-# Shared controls (default values)
-# -----------------------------
 default_values = {
     "EXT_SOURCE_2": 0.5,
     "EXT_SOURCE_3": 0.5,
@@ -172,9 +141,36 @@ default_values = {
     "CREDIT_3M_TO_LAST_RATIO_MEAN": 1.0,
 }
 
-# -----------------------------
-# Predict page layout (with tabs)
-# -----------------------------
+def predict_single_via_api_or_local(features_list):
+    # features_list: list of 17 values in TOP_17 order
+    # Try API first
+    try:
+        resp = requests.post(PREDICT_ENDPOINT, json={"features": features_list}, timeout=10)
+        if resp.status_code == 200:
+            data = resp.json()
+            # API expected response: {"prediction": float}
+            if isinstance(data, dict) and "prediction" in data:
+                return float(data["prediction"])
+            # or fallback if API returns {"predictions":[...]} for a single-row form
+            if isinstance(data, dict) and "predictions" in data and len(data["predictions"]) > 0:
+                return float(data["predictions"][0])
+    except Exception:
+        pass
+
+    # fallback to local model if available
+    try:
+        if model is not None:
+            df_tmp = pd.DataFrame([features_list], columns=TOP_17)
+            if hasattr(model, "predict_proba"):
+                return float(model.predict_proba(df_tmp)[0, 1])
+            else:
+                out = model.predict(df_tmp)
+                return float(np.asarray(out).ravel()[0])
+    except Exception:
+        pass
+
+    raise RuntimeError("Both API and local model unavailable.")
+
 if menu == "Predict":
     st.title("Predict — Single Applicant")
 
@@ -315,7 +311,6 @@ if menu == "Predict":
                 format="%.2f"
             )
 
-    # ---------- Upload CSV ----------
     with tab_upload:
         st.markdown("#### Upload CSV")
         uploaded = st.file_uploader("", type=['csv'], key='uploader_tab')
@@ -343,25 +338,42 @@ if menu == "Predict":
                     # -------- Run predictions on uploaded CSV (only here) --------
                     st.markdown("### Predictions")
                     if st.button("Run predictions on uploaded CSV", key='run_batch_from_tab'):
-                        if model is None:
-                            st.error("Model not found. Place credit_model.pkl in app folder.")
+                        if model is None and not PREDICT_CSV_ENDPOINT:
+                            st.error("Model not found and no API configured.")
                         else:
-                            # استخدام نفس الـ TOP_17 عشان يتوقع صح
-                            rawb = model.predict_proba(batch_df_preview[TOP_17])[:, 1]
+                            try:
+                                # prepare CSV bytes (only TOP_17 columns)
+                                csv_bytes = batch_df_preview[TOP_17].to_csv(index=False).encode('utf-8')
 
-                            # فقط prediction في الجدول (بدون focal column)
-                            batch_df_preview['prediction'] = np.where(rawb >= THRESHOLD, "RISKY", "LOW RISK")
+                                # call FastAPI batch endpoint
+                                files = {"file": ("uploaded.csv", csv_bytes, "text/csv")}
+                                resp = requests.post(PREDICT_CSV_ENDPOINT, files=files, timeout=60)
 
-                            st.success("Batch predictions completed.")
-                            st.dataframe(batch_df_preview[['prediction']].head(20), use_container_width=True)
+                                if resp.status_code != 200:
+                                    st.error(f"API error: {resp.status_code} — {resp.text}")
+                                else:
+                                    data = resp.json()
+                                    preds = data.get("predictions", [])
+                                    if len(preds) != len(batch_df_preview):
+                                        st.warning("API returned different number of predictions than rows. Showing what we have.")
+                                    # add raw probability and focal, then label using focal threshold
+                                    batch_df_preview['raw_probability'] = np.nan
+                                    batch_df_preview.loc[:len(preds)-1, 'raw_probability'] = preds
+                                    batch_df_preview['focal_probability'] = focal_sigmoid(batch_df_preview['raw_probability'].fillna(0).to_numpy(), gamma=GAMMA)
+                                    batch_df_preview['prediction'] = np.where(batch_df_preview['focal_probability'] >= THRESHOLD, "RISKY", "LOW RISK")
 
-                            st.download_button(
-                                "Download predictions CSV",
-                                batch_df_preview.to_csv(index=False).encode('utf-8'),
-                                file_name='batch_predictions.csv',
-                                mime='text/csv',
-                                key='download_batch'
-                            )
+                                    st.success("Batch predictions completed (via API).")
+                                    st.dataframe(batch_df_preview[['prediction', 'raw_probability']].head(20), use_container_width=True)
+
+                                    st.download_button(
+                                        "Download predictions CSV",
+                                        batch_df_preview.to_csv(index=False).encode('utf-8'),
+                                        file_name='batch_predictions.csv',
+                                        mime='text/csv',
+                                        key='download_batch'
+                                    )
+                            except Exception as e:
+                                st.error(f"Batch prediction failed: {e}")
 
             except Exception as e:
                 st.error(f"Failed to read uploaded CSV: {e}")
@@ -412,34 +424,44 @@ if menu == "Predict":
 
         st.markdown("### Predictions")
         if st.session_state.get('show_single_A', False):
-            if model is None:
-                st.error("Model not found. Place credit_model.pkl in the app folder and refresh.")
+            if model is None and not PREDICT_ENDPOINT:
+                st.error("Model not found and no API configured.")
             else:
                 progress_a = st.progress(0)
                 for i in range(0, 100, 10):
                     time.sleep(0.02)
                     progress_a.progress(i + 10)
 
-                raw_a = model.predict_proba(df_single)[0, 1]
-                st.metric("Raw probability", f"{raw_a * 100:.2f}%")
-                label_a = "RISKY" if raw_a >= THRESHOLD else "LOW RISK"
-                color_a = "#ff5b5b" if label_a == "RISKY" else "#9AD3BC"
-                st.markdown(
-                    f"""
-                    <div style='padding:18px;border-radius:12px;
-                         background:linear-gradient(90deg,#0b0b0b,#121212);
-                         border:2px solid rgba(255,91,91,0.12);'>
-                        <h1 style='color:{color_a};text-align:center'>{label_a}</h1>
-                    </div>
-                    """,
-                    unsafe_allow_html=True
-                )
+                # prepare features in order
+                features_list = df_single.iloc[0][TOP_17].tolist()
+                try:
+                    raw_a = predict_single_via_api_or_local(features_list)
+                except Exception as e:
+                    st.error(f"Prediction failed: {e}")
+                    raw_a = None
 
-                with st.expander("Explain (brief)", expanded=False):
-                    st.write(
-                        "- Raw probability from the model.\n"
-                        "- Threshold on raw probability decides label."
+                if raw_a is not None:
+                    focal_a = focal_sigmoid(np.array([raw_a]), gamma=GAMMA)[0]
+                    st.metric("Raw probability", f"{raw_a * 100:.2f}%")
+                    label_a = "RISKY" if focal_a >= THRESHOLD else "LOW RISK"
+                    color_a = "#ff5b5b" if label_a == "RISKY" else "#9AD3BC"
+                    st.markdown(
+                        f"""
+                        <div style='padding:18px;border-radius:12px;
+                             background:linear-gradient(90deg,#0b0b0b,#121212);
+                             border:2px solid rgba(255,91,91,0.12);'>
+                            <h1 style='color:{color_a};text-align:center'>{label_a}</h1>
+                        </div>
+                        """,
+                        unsafe_allow_html=True
                     )
+
+                    with st.expander("Explain (brief)", expanded=False):
+                        st.write(
+                            "- Raw probability from the model.\n"
+                            "- Focal transform applied (`p**gamma`) with gamma fixed to 2.\n"
+                            "- Threshold on focal decides label."
+                        )
 
     # ========= Single applicant preview + buttons داخل Inputs B =========
     with tab_inputs_b:
@@ -451,7 +473,6 @@ if menu == "Predict":
         with bcol1b:
             predict_btn_b = st.button("Predict this applicant", key='single_predict_B')
             if predict_btn_b:
-                # ✅ لما تضغط من B برضو خلّي النتيجة تظهر في A و B
                 st.session_state['show_single_B'] = True
                 st.session_state['show_single_A'] = True
         with bcol2b:
@@ -466,34 +487,43 @@ if menu == "Predict":
 
         st.markdown("### Predictions")
         if st.session_state.get('show_single_B', False):
-            if model is None:
-                st.error("Model not found. Place credit_model.pkl in the app folder and refresh.")
+            if model is None and not PREDICT_ENDPOINT:
+                st.error("Model not found and no API configured.")
             else:
                 progress_b = st.progress(0)
                 for i in range(0, 100, 10):
                     time.sleep(0.02)
                     progress_b.progress(i + 10)
 
-                raw_b = model.predict_proba(df_single)[0, 1]
-                st.metric("Raw probability", f"{raw_b * 100:.2f}%")
-                label_b = "RISKY" if raw_b >= THRESHOLD else "LOW RISK"
-                color_b = "#ff5b5b" if label_b == "RISKY" else "#9AD3BC"
-                st.markdown(
-                    f"""
-                    <div style='padding:18px;border-radius:12px;
-                         background:linear-gradient(90deg,#0b0b0b,#121212);
-                         border:2px solid rgba(255,91,91,0.12);'>
-                        <h1 style='color:{color_b};text-align:center'>{label_b}</h1>
-                    </div>
-                    """,
-                    unsafe_allow_html=True
-                )
+                # prepare features in order
+                features_list_b = df_single.iloc[0][TOP_17].tolist()
+                try:
+                    raw_b = predict_single_via_api_or_local(features_list_b)
+                except Exception as e:
+                    st.error(f"Prediction failed: {e}")
+                    raw_b = None
 
-                with st.expander("Explain (brief)", expanded=False):
-                    st.write(
-                        "- Raw probability from the model.\n"
-                        "- Threshold on raw probability decides label."
+                if raw_b is not None:
+                    focal_b = focal_sigmoid(np.array([raw_b]), gamma=GAMMA)[0]
+                    label_b = "RISKY" if focal_b >= THRESHOLD else "LOW RISK"
+                    color_b = "#ff5b5b" if label_b == "RISKY" else "#9AD3BC"
+                    st.markdown(
+                        f"""
+                        <div style='padding:18px;border-radius:12px;
+                             background:linear-gradient(90deg,#0b0b0b,#121212);
+                             border:2px solid rgba(255,91,91,0.12);'>
+                            <h1 style='color:{color_b};text-align:center'>{label_b}</h1>
+                        </div>
+                        """,
+                        unsafe_allow_html=True
                     )
+
+                    with st.expander("Explain (brief)", expanded=False):
+                        st.write(
+                            "- Raw probability from the model.\n"
+                            "- Focal transform applied (`p**gamma`) with gamma fixed to 2.\n"
+                            "- Threshold on focal decides label."
+                        )
 
 # -----------------------------
 # About page — minimal display
@@ -539,6 +569,3 @@ else:
         """
     )
 
-# -----------------------------
-# End
-# -----------------------------
