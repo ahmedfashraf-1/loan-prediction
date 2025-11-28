@@ -9,4 +9,7 @@ lightgbm==4.1.0
 joblib
 python-multipart
 requests
+
 itsdangerous==2.1.2
+SQLAlchemy==1.4.49
+pymysql
