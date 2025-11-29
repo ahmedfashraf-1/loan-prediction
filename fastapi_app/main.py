@@ -107,7 +107,12 @@ Base.metadata.create_all(bind=engine)
 # ============================================================
 
 def hash_pass(p):
+    if p is None:
+        p = ""
+    p = p.encode("utf-8")[:72]
+    p = p.decode("utf-8", "ignore")
     return pwd_context.hash(p)
+
 
 def verify_pass(p, hashed):
     return pwd_context.verify(p, hashed)
@@ -213,6 +218,11 @@ def register(
     request: Request, username: str = Form(...), email: str = Form(...),
     password: str = Form(...), password2: str = Form(...)
 ):
+    if password is None or password.strip() == "":
+        return templates.TemplateResponse(
+            "register.html",
+            {"request": request, "error": "Password cannot be empty."}
+        )
     # EMAIL VALIDATION
     email_pattern = r"^[a-zA-Z0-9._%+-]+@gmail\.com$"
     if not re.match(email_pattern, email.strip()):
@@ -233,6 +243,12 @@ def register(
 
     if password != password2:
         return templates.TemplateResponse("register.html", {"request": request, "error": "Passwords do not match."})
+
+    if len(password.encode("utf-8")) > 72:
+        return templates.TemplateResponse(
+            "register.html",
+            {"request": request, "error": "Password is too long (max 72 bytes)."}
+        )
 
     # USER CREATION
     try:
