@@ -17,3 +17,4 @@ lightgbm==4.1.0
 
 joblib
 requests
+argon2-cffi==23.1.0
