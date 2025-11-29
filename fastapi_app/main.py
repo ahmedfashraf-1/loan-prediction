@@ -80,7 +80,7 @@ if os.path.isdir("static"):
 
 Base = declarative_base()
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 engine = create_engine(
     DB_URL,
     pool_pre_ping=True,
@@ -107,10 +107,6 @@ Base.metadata.create_all(bind=engine)
 # ============================================================
 
 def hash_pass(p):
-    if p is None:
-        p = ""
-    p = p.encode("utf-8")[:72]
-    p = p.decode("utf-8", "ignore")
     return pwd_context.hash(p)
 
 
@@ -243,13 +239,6 @@ def register(
 
     if password != password2:
         return templates.TemplateResponse("register.html", {"request": request, "error": "Passwords do not match."})
-
-    if len(password.encode("utf-8")) > 72:
-        return templates.TemplateResponse(
-            "register.html",
-            {"request": request, "error": "Password is too long (max 72 bytes)."}
-        )
-
     # USER CREATION
     try:
         create_user(username.strip(), email.strip(), password)
