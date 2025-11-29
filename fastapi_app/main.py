@@ -18,8 +18,44 @@ import pandas as pd
 # ============================================================
 # CONFIG
 # ============================================================
+# ============================================================
+# DATABASE AUTO-CONFIG (SkySQL Cloud + Local SQLite fallback)
+# ============================================================
 
-DB_URL = "mysql+pymysql://root:1234@localhost:3306/depi_auth?charset=utf8mb4"
+import urllib.parse
+
+# Read env vars (Railway / production)
+DB_HOST = os.getenv("DB_HOST")
+DB_PORT = os.getenv("DB_PORT")
+DB_USER = os.getenv("DB_USER")
+DB_PASS_RAW = os.getenv("DB_PASS")
+DB_NAME = os.getenv("DB_NAME")
+
+# Decide if we use Cloud or Local
+USE_CLOUD_DB = all([
+    DB_HOST,
+    DB_PORT,
+    DB_USER,
+    DB_PASS_RAW,
+    DB_NAME
+])
+
+if USE_CLOUD_DB:
+    print("🌍 Using SkySQL Cloud Database")
+
+    # Fix special characters in password
+    DB_PASS = urllib.parse.quote_plus(DB_PASS_RAW)
+
+    DB_URL = (
+        f"mysql+pymysql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+        "?charset=utf8mb4&ssl_verify_cert=false"
+    )
+
+else:
+    print("💻 Using Local SQLite Database (No ENV found)")
+
+    DB_URL = "sqlite:///./local.db"
+
 SESSION_SECRET = "SUPER_SECRET_KEY"
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -34,7 +70,7 @@ app = FastAPI(title="Credit Risk Portal (Auth + Prediction API)")
 
 app.add_middleware(SessionMiddleware, secret_key=SESSION_SECRET)
 
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
 if os.path.isdir("static"):
     app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -44,9 +80,14 @@ if os.path.isdir("static"):
 # ============================================================
 
 Base = declarative_base()
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-engine = create_engine(DB_URL, pool_pre_ping=True)
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+engine = create_engine(
+    DB_URL,
+    pool_pre_ping=True,
+    pool_recycle=280
+)
+
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 
 
@@ -235,3 +276,13 @@ async def predict_csv(file: UploadFile = File(...)):
         preds.append(predict_model(features))
 
     return {"rows": len(preds), "predictions": preds}
+# test database
+@app.get("/debug/users")
+def debug_users():
+    db = SessionLocal()
+    try:
+        users = db.query(User).all()
+        return {"users": [u.email for u in users]}
+    finally:
+        db.close()
+
