@@ -183,20 +183,20 @@ if menu == "Predict":
         col1, col2, col3 = st.columns([1, 1, 1])
         with col1:
             ext2 = st.slider(
-                "EXT_SOURCE_2",
+                "External credit score 2",
                 0.0, 1.0,
                 float(default_values['EXT_SOURCE_2']),
                 step=0.01
             )
             an_credit = st.number_input(
-                "ANNUITY_CREDIT_RATIO",
+                "Installment-to-loan ratio",
                 min_value=0.0, max_value=1.0,
                 value=float(default_values['ANNUITY_CREDIT_RATIO']),
                 step=0.001,
                 format="%.3f"
             )
             cred_income = st.number_input(
-                "CREDIT_INCOME_RATIO",
+                "Loan-to-income ratio",
                 min_value=0.0, max_value=50.0,
                 value=float(default_values['CREDIT_INCOME_RATIO']),
                 step=0.01,
@@ -204,20 +204,20 @@ if menu == "Predict":
             )
         with col2:
             ext3 = st.slider(
-                "EXT_SOURCE_3",
+                "External credit score 3",
                 0.0, 1.0,
                 float(default_values['EXT_SOURCE_3']),
                 step=0.01
             )
             an_income = st.number_input(
-                "ANNUITY_INCOME_RATIO",
+                "Installment-to-income ratio",
                 min_value=0.0, max_value=1.0,
                 value=float(default_values['ANNUITY_INCOME_RATIO']),
                 step=0.001,
                 format="%.3f"
             )
             years_emp = st.number_input(
-                "YEARS_EMPLOYED",
+                "Years employed",
                 min_value=0.0, max_value=60.0,
                 value=float(default_values['YEARS_EMPLOYED']),
                 step=0.1,
@@ -225,19 +225,19 @@ if menu == "Predict":
             )
         with col3:
             social = st.number_input(
-                "SOCIAL_CIRCLE_AVG",
+                "Average social-circle impact",
                 min_value=0.0, max_value=1000.0,
                 value=float(default_values['SOCIAL_CIRCLE_AVG']),
                 step=0.25,
                 format="%.2f"
             )
             amt_req = st.slider(
-                "AMT_REQ_CREDIT_BUREAU_YEAR",
+                "Credit bureau requests in last year",
                 0, 30,
                 int(default_values['AMT_REQ_CREDIT_BUREAU_YEAR'])
             )
             cred_3m = st.number_input(
-                "CREDIT_3M_TO_LAST_RATIO_MEAN",
+                "Avg 3-months / last loan ratio",
                 min_value=0.0, max_value=50.0,
                 value=float(default_values['CREDIT_3M_TO_LAST_RATIO_MEAN']),
                 step=0.01,
@@ -250,21 +250,21 @@ if menu == "Predict":
         col4, col5 = st.columns([1, 1])
         with col4:
             app_mean = st.number_input(
-                "APPLICATION_CREDIT_RATIO_MEAN",
+                "Average application loan ratio",
                 min_value=0.0, max_value=10.0,
                 value=float(default_values['APPLICATION_CREDIT_RATIO_MEAN']),
                 step=0.01,
                 format="%.2f"
             )
             app_max = st.number_input(
-                "APPLICATION_CREDIT_RATIO_MAX",
+                "Max application loan ratio",
                 min_value=0.0, max_value=20.0,
                 value=float(default_values['APPLICATION_CREDIT_RATIO_MAX']),
                 step=0.01,
                 format="%.2f"
             )
             app_std = st.number_input(
-                "APPLICATION_CREDIT_RATIO_STD",
+                "Application loan ratio variability",
                 min_value=0.0, max_value=10.0,
                 value=float(default_values['APPLICATION_CREDIT_RATIO_STD']),
                 step=0.01,
@@ -272,21 +272,21 @@ if menu == "Predict":
             )
         with col5:
             cg_mean = st.number_input(
-                "CREDIT_GOODS_RATIO_MEAN",
+                "Average goods-financing ratio",
                 min_value=0.0, max_value=10.0,
                 value=float(default_values['CREDIT_GOODS_RATIO_MEAN']),
                 step=0.01,
                 format="%.2f"
             )
             cg_max = st.number_input(
-                "CREDIT_GOODS_RATIO_MAX",
+                "Max goods-financing ratio",
                 min_value=0.0, max_value=10.0,
                 value=float(default_values['CREDIT_GOODS_RATIO_MAX']),
                 step=0.01,
                 format="%.2f"
             )
             cg_std = st.number_input(
-                "CREDIT_GOODS_RATIO_STD",
+                "Goods-financing ratio variability",
                 min_value=0.0, max_value=10.0,
                 value=float(default_values['CREDIT_GOODS_RATIO_STD']),
                 step=0.001,
@@ -296,7 +296,7 @@ if menu == "Predict":
         col6, col7 = st.columns([1, 1])
         with col6:
             app_min = st.number_input(
-                "APPLICATION_CREDIT_RATIO_MIN",
+                "Min application loan ratio",
                 min_value=0.0, max_value=10.0,
                 value=float(default_values['APPLICATION_CREDIT_RATIO_MIN']),
                 step=0.01,
@@ -304,7 +304,7 @@ if menu == "Predict":
             )
         with col7:
             cg_min = st.number_input(
-                "CREDIT_GOODS_RATIO_MIN",
+                "Min goods-financing ratio",
                 min_value=0.0, max_value=10.0,
                 value=float(default_values['CREDIT_GOODS_RATIO_MIN']),
                 step=0.01,
@@ -568,4 +568,3 @@ else:
         - Threshold can be tuned based on internal policy
         """
     )
-
