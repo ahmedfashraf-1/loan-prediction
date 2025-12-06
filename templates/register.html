@@ -1,46 +1,185 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="utf-8" />
 <title>Register — Credit Risk</title>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
 <style>
-body{background:#0b0b0b;color:#fff;font-family:Inter,Arial,sans-serif;padding:28px}
-.container{max-width:520px;margin:0 auto}
-.card{background:#111;padding:22px;border-radius:12px;border:1px solid rgba(255,255,255,0.04)}
-h1{color:#E3B84B;margin:0 0 8px 0}
-label{display:block;color:#cfcfcf;margin-top:12px}
-input{width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:#0b0b0b;color:#fff}
-button{margin-top:16px;background:linear-gradient(90deg,#ff6b6b,#ff3b3b);border:none;padding:10px 14px;border-radius:10px;color:#fff;font-weight:700;width:100%}
-.note{color:#bdbdbd;margin-top:10px}
-.error{background:#3b0f0f;padding:10px;border-radius:8px;color:#fff;margin-top:10px}
-a { color:#E3B84B }
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  overflow:hidden;
+  font-family:"Inter",sans-serif;
+
+  background: rgba(0,0,0,0.6) url("static/backgound.jpeg") center/cover no-repeat;
+  background-blend-mode:darken;
+}
+
+/* Floating glass form */
+.form-card{
+  width:500px;
+  padding:48px 44px;
+  border-radius:24px;
+
+  background:rgba(15,15,22,0.55);
+  backdrop-filter:blur(18px);
+  border:1px solid rgba(255,255,255,0.12);
+  box-shadow:0 25px 70px rgba(0,0,0,0.65);
+
+  position:absolute;
+  left:10%;
+  animation:fadeIn .9s ease-out;
+}
+@keyframes fadeIn{
+  from{opacity:0;transform:translateY(25px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+.form-card h1{
+  font-size:32px;
+  font-weight:800;
+  color:#fff;
+  margin-bottom:6px;
+}
+.subtitle{
+  color:#cbd5e1;
+  font-size:14px;
+  margin-bottom:25px;
+}
+
+/* Error box */
+.error{
+  padding:12px 14px;
+  border-radius:12px;
+  background:#dc2626;
+  margin-bottom:14px;
+  font-weight:600;
+  color:white;
+}
+
+/* Inputs */
+label{
+  font-size:14px;
+  font-weight:600;
+  color:#e2e8f0;
+  margin-top:14px;
+  display:block;
+}
+input{
+  width:100%;
+  padding:14px 16px;
+  margin-top:6px;
+
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.18);
+  border-radius:12px;
+  color:#fff;
+  font-size:15px;
+  transition:.25s;
+}
+input:focus{
+  border-color:#60a5fa;
+  box-shadow:0 0 0 3px rgba(96,165,250,0.35);
+  transform:translateY(-2px);
+}
+
+/* Button */
+button{
+  margin-top:28px;
+  padding:15px;
+  width:100%;
+  border-radius:12px;
+  border:none;
+
+  background:linear-gradient(135deg,#3b82f6,#1d4ed8);
+  box-shadow:0 18px 45px rgba(59,130,246,0.45);
+
+  cursor:pointer;
+  color:#fff;
+  font-size:16px;
+  font-weight:700;
+  transition:.25s;
+}
+button:hover{
+  transform:translateY(-4px);
+  box-shadow:0 25px 55px rgba(59,130,246,0.6);
+}
+
+/* Footer */
+.note{
+  margin-top:16px;
+  color:#cbd5e1;
+  font-size:14px;
+}
+.note a{
+  color:#fbbf24;
+  text-decoration:none;
+  font-weight:700;
+}
+
+/* FLOAT ANIMATION (same as login) */
+@keyframes softFloat {
+  0%   { transform: translateY(0); }
+  50%  { transform: translateY(-10px); }
+  100% { transform: translateY(0); }
+}
+
+/* PNG RIGHT IMAGE */
+.right-image{
+  position:absolute;
+  right:10%;
+  bottom:10%;
+  width:500px;
+  opacity:0.95;
+
+  animation: softFloat 5s ease-in-out infinite;
+}
+
 </style>
 </head>
+
 <body>
-<div class="container">
-  <div class="card">
-    <h1>Create account</h1>
 
-    {% if error %}
-      <div class="error">{{ error }}</div>
-    {% endif %}
+<div class="form-card">
 
-    <form method="post" action="/register">
-      <label>Username</label>
-      <input type="text" name="username" required />
-      <label>Email</label>
-      <input type="email" name="email" required />
-      <label>Password</label>
-      <input type="password" name="password" required />
-      <label>Confirm Password</label>
-      <input type="password" name="password2" required />
-      <button type="submit">Create account</button>
-    </form>
+  <h1>CREATE ACCOUNT</h1>
+  <p class="subtitle">Set up your secure credit risk portal</p>
 
-    <p class="note">Already registered? <a href="/login">Login</a></p>
-    <p class="note"><a href="/">Back to Home</a></p>
+  {% if error %}
+  <div class="error">{{ error }}</div>
+  {% endif %}
+
+  <form method="post" action="/register">
+
+    <label>Username</label>
+    <input type="text" name="username" required>
+
+    <label>Email</label>
+    <input type="email" name="email" required>
+
+    <label>Password</label>
+    <input type="password" name="password" required>
+
+    <label>Confirm Password</label>
+    <input type="password" name="password2" required>
+
+    <button type="submit">Create account</button>
+  </form>
+
+  <div class="note">
+    Already registered? <a href="/login">Login</a><br>
+    <a href="/">Back to Home</a>
   </div>
+
 </div>
+
+<img src="/static/bank.png" class="right-image">
+
 </body>
 </html>

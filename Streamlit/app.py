@@ -85,6 +85,339 @@ if 'show_single_A' not in st.session_state:
 if 'show_single_B' not in st.session_state:
     st.session_state['show_single_B'] = False
 
+
+
+st.markdown("""
+<style>
+/* Hide Streamlit keyboard shortcut hint */
+[data-testid="stKeyboardCommand"] {
+    display: none !important;
+}
+
+/* Hide tooltips that show text on hover */
+.stTooltip {
+    display: none !important;
+}
+
+/* Hide ANY orphan floating text in sidebar */
+[data-testid="stSidebar"] span, 
+[data-testid="stSidebar"] div[role="tooltip"] {
+    display: none !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
+# ----------------------
+# Inject enhanced CSS + ambient orbs (visual improvements only)
+# ----------------------
+
+st.markdown(
+    """
+    <style>
+
+    :root{
+        --bg1:#020617;
+        --bg2:#020014;
+        --accent:#fbbf24;
+        --accent-soft:#f97316;
+        --accent-soft2:#38bdf8;
+        --panel:#020617;
+        --panel-soft:#020617;
+        --text:#f9fafb;
+        --muted:#9ca3af;
+    }
+
+    /* ================================
+       GLOBAL APP BACKGROUND (ANIMATED)
+       ================================ */
+    body{
+        background: radial-gradient(circle at 0% 0%, #1e293b 0, #020617 45%),
+                    radial-gradient(circle at 100% 100%, #020617 0, #000 60%);
+        color: var(--text);
+    }
+
+    [data-testid="stAppViewContainer"]{
+        background: radial-gradient(circle at 0% 0%, #111827 0, #020617 40%),
+                    radial-gradient(circle at 100% 100%, #020617 0, #000 55%);
+        animation:bgDrift 32s ease-in-out infinite alternate;
+    }
+
+    @keyframes bgDrift{
+        0%   { background-position:0% 0%,100% 100%; }
+        50%  { background-position:20% 10%,80% 90%; }
+        100% { background-position:40% 0%,60% 100%; }
+    }
+
+    /* ================================
+       MAIN PAGE PANEL / FIX OVERFLOW
+       ================================ */
+    [data-testid="stAppViewContainer"] > .main{
+        padding-top:1.5rem;
+        padding-bottom:1.5rem;
+    }
+
+    .block-container{
+        max-width:1180px;
+        margin:auto;
+        padding:1.5rem 2.2rem 2.4rem;
+        border-radius:26px;
+        background:radial-gradient(circle at top left,rgba(15,23,42,0.92),rgba(2,6,23,0.98));
+        border:1px solid rgba(148,163,184,0.32);
+        box-shadow:
+            0 30px 90px rgba(0,0,0,0.85),
+            inset 0 0 60px rgba(15,23,42,0.9);
+        backdrop-filter:blur(24px);
+
+        /* ===== FIX PAGE NOT COMPLETING ===== */
+        overflow:visible !important;
+
+        position:relative;
+    }
+
+    /* ORBITAL HALO EFFECTS (LIGHT BLOBS) */
+    .block-container::before{
+        content:"";
+        position:absolute;
+        width:520px;
+        height:520px;
+        border-radius:50%;
+        background:radial-gradient(circle,rgba(56,189,248,0.20),transparent 65%);
+        top:-220px;
+        right:-120px;
+        filter:blur(3px);
+        opacity:0.75;
+        mix-blend-mode:screen;
+        animation:haloOrbit 26s ease-in-out infinite alternate;
+        pointer-events:none;
+        z-index:-1;
+    }
+
+    .block-container::after{
+        content:"";
+        position:absolute;
+        width:420px;
+        height:420px;
+        border-radius:50%;
+        background:radial-gradient(circle,rgba(248,250,252,0.08),transparent 60%);
+        bottom:-180px;
+        left:-80px;
+        filter:blur(4px);
+        opacity:0.5;
+        mix-blend-mode:screen;
+        animation:haloOrbit2 32s ease-in-out infinite alternate;
+        pointer-events:none;
+        z-index:-1;
+    }
+
+    @keyframes haloOrbit{
+        0%{transform:translate3d(0,0,0);}
+        50%{transform:translate3d(-30px,20px,0);}
+        100%{transform:translate3d(10px,-10px,0);}
+    }
+    @keyframes haloOrbit2{
+        0%{transform:translate3d(0,0,0) scale(1);}
+        50%{transform:translate3d(25px,-15px,0) scale(1.05);}
+        100%{transform:translate3d(-15px,10px,0) scale(1.02);}
+    }
+
+    /* =======================================
+       FLOATING ORBS (ANIMATION OPTIMIZED)
+       ======================================= */
+    .ambient-orb{
+        position:fixed;
+        border-radius:999px;
+        filter:blur(25px);
+        opacity:0.55;
+        mix-blend-mode:screen;
+        pointer-events:none;
+        z-index:-2;
+    }
+
+    /* Smaller orbs for performance */
+    .orb-1{
+        width:200px;height:200px;
+        background:radial-gradient(circle,rgba(56,189,248,0.32),transparent 60%);
+        top:6%;left:4%;
+        animation:orbFloat1 38s ease-in-out infinite alternate;
+    }
+    .orb-2{
+        width:170px;height:170px;
+        background:radial-gradient(circle,rgba(234,179,8,0.28),transparent 60%);
+        bottom:10%;right:6%;
+        animation:orbFloat2 42s ease-in-out infinite alternate;
+    }
+    .orb-3{
+        width:220px;height:220px;
+        background:radial-gradient(circle,rgba(147,51,234,0.24),transparent 60%);
+        top:45%;right:35%;
+        animation:orbFloat3 48s ease-in-out infinite alternate;
+    }
+
+    /* smooth animations */
+    @keyframes orbFloat1{
+        0%{transform:translate3d(0,0,0);}
+        50%{transform:translate3d(30px,20px,0);}
+        100%{transform:translate3d(-10px,10px,0);}
+    }
+    @keyframes orbFloat2{
+        0%{transform:translate3d(0,0,0);}
+        50%{transform:translate3d(-25px,-15px,0);}
+        100%{transform:translate3d(15px,-5px,0);}
+    }
+    @keyframes orbFloat3{
+        0%{transform:translate3d(0,0,0);}
+        50%{transform:translate3d(20px,-20px,0);}
+        100%{transform:translate3d(-15px,15px,0);}
+    }
+
+    /* ================================
+       FIX HEADER hiding behind orbs
+       ================================ */
+    [data-testid="stHeader"]{
+        z-index:9999 !important;
+        position:relative !important;
+    }
+
+    /* ================================
+       SIDEBAR
+       ================================ */
+    [data-testid="stSidebar"]{
+        background:linear-gradient(180deg,#020617,#020617);
+        border-right:1px solid rgba(55,65,81,0.8);
+        box-shadow:20px 0 45px rgba(0,0,0,0.85);
+    }
+    [data-testid="stSidebar"] *{
+        color:#e5e7eb !important;
+        font-family:"Inter",system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif;
+    }
+    [data-testid="stSidebar"] h1{
+        font-size:1.1rem;
+        letter-spacing:.12em;
+        text-transform:uppercase;
+        margin-bottom:.75rem;
+    }
+
+    /* RADIO BUTTONS */
+    [data-testid="stSidebar"] [data-testid="stRadio"] > label{
+        font-size:.95rem;
+        font-weight:500;
+    }
+    [data-testid="stSidebar"] [data-testid="stRadio"] div[role="radiogroup"] > label{
+        padding:.35rem .4rem;
+        border-radius:999px;
+        transition:background .2s ease, transform .16s ease;
+    }
+    [data-testid="stSidebar"] [data-testid="stRadio"] div[role="radiogroup"] > label:hover{
+        background:rgba(148,163,184,0.18);
+        transform:translateX(2px);
+    }
+
+    /* ================================
+       TABS
+       ================================ */
+    .stTabs [data-baseweb="tab-list"]{
+        border-bottom:1px solid rgba(148,163,184,0.4);
+        margin-bottom:.35rem;
+    }
+    .stTabs [data-baseweb="tab"]{
+        font-size:.95rem;
+        font-weight:500;
+        padding-bottom:.55rem;
+        color:rgba(148,163,184,0.8);
+    }
+    .stTabs [data-baseweb="tab"][aria-selected="true"]{
+        color:#f9fafb;
+        border-bottom:2px solid var(--accent-soft);
+    }
+
+    /* ================================
+       SLIDERS
+       ================================ */
+    .stSlider > div > div > div{
+        background:rgba(31,41,55,0.85);
+        border-radius:999px;
+    }
+    .stSlider [role="slider"]{
+        background:linear-gradient(135deg,#f97316,#facc15) !important;
+        box-shadow:0 0 0 4px rgba(248,181,0,0.32);
+    }
+
+    /* ================================
+       INPUTS
+       ================================ */
+    input[type="number"],
+    input[type="text"],
+    input[type="email"],
+    input[type="password"]{
+        background:rgba(15,23,42,0.95);
+        border-radius:12px;
+        border:1px solid rgba(148,163,184,0.45);
+        color:#e5e7eb;
+    }
+    input[type="number"]:focus,
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="password"]:focus{
+        border-color:var(--accent-soft2);
+        box-shadow:0 0 0 1px rgba(56,189,248,0.6);
+    }
+
+    /* ================================
+       BUTTONS
+       ================================ */
+    button[kind="primary"],
+    .stDownloadButton button{
+        background:linear-gradient(135deg,#f97316,#facc15) !important;
+        color:#111827 !important;
+        border-radius:999px !important;
+        font-weight:700 !important;
+        border:none !important;
+        box-shadow:0 18px 45px rgba(248,181,0,0.38) !important;
+        padding:.55rem 1.5rem !important;
+        transition:transform .18s ease, box-shadow .18s ease, filter .18s ease !important;
+    }
+    button[kind="primary"]:hover,
+    .stDownloadButton button:hover{
+        transform:translateY(-2px);
+        filter:brightness(1.05);
+        box-shadow:0 26px 60px rgba(248,181,0,0.5) !important;
+    }
+
+    /* ================================
+       DATAFRAME
+       ================================ */
+    [data-testid="stDataFrame"]{
+        background:rgba(15,23,42,0.9);
+        border-radius:16px;
+        border:1px solid rgba(148,163,184,0.45);
+        box-shadow:0 18px 50px rgba(15,23,42,0.85);
+    }
+
+    /* ================================
+       EXPANDER
+       ================================ */
+    details{
+        background:rgba(15,23,42,0.92);
+        border-radius:14px;
+        border:1px solid rgba(148,163,184,0.55);
+    }
+
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# ambient orbs (HTML)
+st.markdown(
+    """
+    <div class="ambient-orb orb-1"></div>
+    <div class="ambient-orb orb-2"></div>
+    <div class="ambient-orb orb-3"></div>
+    """,
+    unsafe_allow_html=True
+)
+
+# ====== keep existing app-level quick CSS patch (original buttons targeted)
 st.markdown(
     """
     <style>
