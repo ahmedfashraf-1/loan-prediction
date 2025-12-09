@@ -57,7 +57,7 @@ def focal_sigmoid(p: np.ndarray, gamma: float = 2.0) -> np.ndarray:
 GAMMA = 2.0  # fixed per request
 THRESHOLD = 0.4571  # fixed threshold per request
 
-API_BASE = os.getenv("API_URL", "http://127.0.0.1:8000")
+API_BASE = os.getenv("API_URL", "https://loan-prediction-production-96aa.up.railway.app")
 PREDICT_ENDPOINT = f"{API_BASE}/predict"
 PREDICT_CSV_ENDPOINT = f"{API_BASE}/predict_csv"
 
