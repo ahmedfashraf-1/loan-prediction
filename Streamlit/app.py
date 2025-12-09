@@ -837,7 +837,6 @@ if menu == "Predict":
                     raw_b = None
 
                 if raw_b is not None:
-                    st.subheader(" Probability Score")
                     st.metric("Raw Probability", f"{raw_b * 100:.2f}%")
                     focal_b = focal_sigmoid(np.array([raw_b]), gamma=GAMMA)[0]
                     label_b = "RISKY" if focal_b >= THRESHOLD else "LOW RISK"
