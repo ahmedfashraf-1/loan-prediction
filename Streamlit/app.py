@@ -57,7 +57,7 @@ def focal_sigmoid(p: np.ndarray, gamma: float = 2.0) -> np.ndarray:
 GAMMA = 2.0  # fixed per request
 THRESHOLD = 0.4571  # fixed threshold per request
 
-API_BASE = "http://127.0.0.1:8000"
+API_BASE = os.getenv("API_URL", "http://127.0.0.1:8000")
 PREDICT_ENDPOINT = f"{API_BASE}/predict"
 PREDICT_CSV_ENDPOINT = f"{API_BASE}/predict_csv"
 
@@ -837,6 +837,8 @@ if menu == "Predict":
                     raw_b = None
 
                 if raw_b is not None:
+                    st.subheader(" Probability Score")
+                    st.metric("Raw Probability", f"{raw_b * 100:.2f}%")
                     focal_b = focal_sigmoid(np.array([raw_b]), gamma=GAMMA)[0]
                     label_b = "RISKY" if focal_b >= THRESHOLD else "LOW RISK"
                     color_b = "#ff5b5b" if label_b == "RISKY" else "#9AD3BC"
