@@ -170,10 +170,15 @@ def predict_model(features):
         raise HTTPException(status_code=500, detail="Model not loaded on server.")
 
     try:
-        return float(model.predict([features])[0])
+        if hasattr(model, "predict_proba"):
+            proba = model.predict_proba([features])[0][1]
+            return float(proba)
+
+        pred = model.predict([features])[0]
+        return float(pred)
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Prediction failed: {str(e)}")
-
 
 # ============================================================
 # AUTH ROUTES
